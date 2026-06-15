@@ -5,10 +5,13 @@ output
 outputs
 output_success_but_loss_step1
 
+data
+
 ycb/*
 local_object_packs/glb_assets/*
 logs
 glb_assets/*
+extra_assets/glb_assets/*
 
 .codex
 .agents
