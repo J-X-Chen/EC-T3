@@ -11,7 +11,7 @@ ycb/*
 local_object_packs/glb_assets/*
 logs
 glb_assets/*
-extra_assets/glb_style/*
+extra_assets
 
 .codex
 .agents
