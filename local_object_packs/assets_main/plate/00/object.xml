@@ -1,0 +1,257 @@
+<mujoco model="plate_00">
+  <asset>
+    <mesh name="plate00_visual_mesh" file="textured.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_0" file="collision_0.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_1" file="collision_1.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_2" file="collision_2.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_3" file="collision_3.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_4" file="collision_4.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_5" file="collision_5.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_6" file="collision_6.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_7" file="collision_7.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_8" file="collision_8.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_9" file="collision_9.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_10" file="collision_10.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_11" file="collision_11.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_12" file="collision_12.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_13" file="collision_13.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_14" file="collision_14.obj" scale="0.12 0.12 0.12"/>
+    <mesh name="plate00_collision_mesh_15" file="collision_15.obj" scale="0.12 0.12 0.12"/>
+    <texture name="tex-plate00" type="2d" file="texture_map.png"/>
+    <material name="plate00_material"
+              texture="tex-plate00"
+              rgba="1 1 1 1"
+              texrepeat="1 1"
+              texuniform="false"
+              reflectance="0.5"/>
+  </asset>
+
+  <worldbody>
+    <body>
+      <body name="object">
+        <geom name="g0"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_0"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g1"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_1"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g2"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_2"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g3"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_3"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g4"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_4"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g5"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_5"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g6"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_6"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g7"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_7"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g8"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_8"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g9"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_9"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g10"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_10"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g11"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_11"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g12"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_12"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g13"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_13"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g14"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_14"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+        <geom name="g15"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_collision_mesh_15"
+              density="300"
+              friction="1 0.3 0.1"
+              solimp="0.998 0.998 0.001"
+              solref="0.001 1"
+              contype="1"
+              conaffinity="1"
+              group="0"
+              condim="4"/>
+
+        <geom name="g_visual"
+              type="mesh"
+              pos="0 0 0.03"
+              quat="0.707107 0.707107 0 0"
+              mesh="plate00_visual_mesh"
+              material="plate00_material"
+              contype="0"
+              conaffinity="0"
+              group="1"/>
+      </body>
+
+      <site name="bottom_site" rgba="0 0 0 0" size="0.005" pos="0 0 -0.01"/>
+      <site name="top_site" rgba="0 0 0 0" size="0.005" pos="0 0 0.01"/>
+      <site name="horizontal_radius_site" rgba="0 0 0 0" size="0.005" pos="0.11 0 0"/>
+    </body>
+  </worldbody>
+</mujoco>

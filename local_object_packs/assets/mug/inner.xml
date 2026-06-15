@@ -1,0 +1,39 @@
+<mujoco model="mug_inner">
+  <worldbody>
+    <body name="object_0" pos="0.3 0 0.05">
+      <freejoint name="object_joint_0"/>
+      <geom name="object_0_collision_0" class="mug_collision" mesh="mug00_collision_mesh_0"/>
+      <geom name="object_0_collision_1" class="mug_collision" mesh="mug00_collision_mesh_1"/>
+      <geom name="object_0_collision_2" class="mug_collision" mesh="mug00_collision_mesh_2"/>
+      <geom name="object_0_collision_3" class="mug_collision" mesh="mug00_collision_mesh_3"/>
+      <geom name="object_0_collision_4" class="mug_collision" mesh="mug00_collision_mesh_4"/>
+      <geom name="object_0_collision_5" class="mug_collision" mesh="mug00_collision_mesh_5"/>
+      <geom name="object_0_collision_6" class="mug_collision" mesh="mug00_collision_mesh_6"/>
+      <geom name="object_0_collision_7" class="mug_collision" mesh="mug00_collision_mesh_7"/>
+      <geom name="object_0_collision_8" class="mug_collision" mesh="mug00_collision_mesh_8"/>
+      <geom name="object_0_collision_9" class="mug_collision" mesh="mug00_collision_mesh_9"/>
+      <geom name="object_0_collision_10" class="mug_collision" mesh="mug00_collision_mesh_10"/>
+      <geom name="object_0_collision_11" class="mug_collision" mesh="mug00_collision_mesh_11"/>
+      <geom name="object_0_collision_12" class="mug_collision" mesh="mug00_collision_mesh_12"/>
+      <geom name="object_0_collision_13" class="mug_collision" mesh="mug00_collision_mesh_13"/>
+      <geom name="object_0_collision_14" class="mug_collision" mesh="mug00_collision_mesh_14"/>
+      <geom name="object_0_collision_15" class="mug_collision" mesh="mug00_collision_mesh_15"/>
+      <geom name="object_0_collision_16" class="mug_collision" mesh="mug00_collision_mesh_16"/>
+      <geom name="object_0_collision_17" class="mug_collision" mesh="mug00_collision_mesh_17"/>
+      <geom name="object_0_collision_18" class="mug_collision" mesh="mug00_collision_mesh_18"/>
+      <geom name="object_0_collision_19" class="mug_collision" mesh="mug00_collision_mesh_19"/>
+      <geom name="object_0_collision_20" class="mug_collision" mesh="mug00_collision_mesh_20"/>
+      <geom name="object_0_collision_21" class="mug_collision" mesh="mug00_collision_mesh_21"/>
+      <geom name="object_0_collision_22" class="mug_collision" mesh="mug00_collision_mesh_22"/>
+      <geom name="object_0_collision_23" class="mug_collision" mesh="mug00_collision_mesh_23"/>
+      <geom name="object_0_visual" class="mug_visual"/>
+      <site name="com_0" class="mug_com"/>
+      <site name="bottom_site_0" class="mug_marker_site" pos="0 0 -0.05"/>
+      <site name="top_site_0" class="mug_marker_site" pos="0 0 0.0439039"/>
+      <site name="horizontal_radius_site_0" class="mug_marker_site" pos="0.0700009 0 0"/>
+    </body>
+    <body name="object_target_0" pos="0.45 0 0.05" mocap="true">
+      <geom name="target_object_0" class="mug_target"/>
+    </body>
+  </worldbody>
+</mujoco>

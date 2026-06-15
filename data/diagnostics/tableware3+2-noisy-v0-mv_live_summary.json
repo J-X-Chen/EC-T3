@@ -1,0 +1,15 @@
+{
+  "dataset_name": "tableware3+2-noisy-v0-mv",
+  "episode_success_rate": 0.0,
+  "last_event": null,
+  "note": "Updated during collect; final full diagnostics are written at collect end.",
+  "num_finished_episodes": 1,
+  "num_successful_episodes": 0,
+  "num_successful_task_events": 0,
+  "num_task_success_events": 0,
+  "paths": {
+    "events_jsonl": "/home/jchen572/Code_file/HECRL/data/diagnostics/tableware3+2-noisy-v0-mv_events.jsonl",
+    "live_summary_json": "/home/jchen572/Code_file/HECRL/data/diagnostics/tableware3+2-noisy-v0-mv_live_summary.json"
+  },
+  "task_success_rate": 0.0
+}

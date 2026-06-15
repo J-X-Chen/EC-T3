@@ -1,0 +1,22 @@
+__pycache__
+
+# logging
+output
+outputs
+output_success_but_loss_step1
+
+ycb/*
+local_object_packs/glb_assets/*
+logs
+glb_assets/*
+
+.codex
+.agents
+
+
+# data and checkpoints
+datasets/data/*
+visual_encoders/chkpts/*
+visual_encoders/data/*
+*.npz
+*.pth

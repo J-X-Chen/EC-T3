@@ -1,0 +1,91 @@
+export WANDB_MODE=disabled
+export WANDB_MODE=offline
+python train.py wandb_name_suffix="-stack" steps=3001000 task=manipobj-v0 train_dataset_name=stack-cube-noisy-v0-mv obs=ec_state_gen max_episode_steps=1000 env_kwargs.manipobj.mode=task_stack_all env_kwargs.manipobj.num_cubes=3 agent=sgiql sgiql.alpha=0.05 sgiql.subgoal_policy_type=diffusion sgiql.n_diffusion_steps=10 sgiql.subgoal_k=50 sgiql.n_diffusion_samples=256 sgiql.subgoal_steps=25 sgiql.num_subgoals=32 sgiql.value_competence_radius=-30
+
+python collect.py task=manipobj-v0 env_kwargs.manipobj.mode=data_collection env_kwargs.manipobj.num_cubes=3 multiview=true dataset_name=ppp-cube-noisy-v0-mv dataset_type=noisy num_collect_episodes=7500 max_episode_steps=400
+
+
+
+bash ./exp.sh watch collect.py \
+task=manipobj-v0 \
+env_kwargs.manipobj.mode=data_collection_cube2+3 \
+env_kwargs.manipobj.num_cubes=5 \
+multiview=true \
+dataset_name=cube2+3-noisy-v0-mv \
+dataset_type=noisy \
+num_collect_episodes=4500 \
+max_episode_steps=1000 \
+use_checkpoint=true \
+force_lowmem_export=true lowmem_chunk_mib=8
+
+只要成功
+python collect.py task=manipobj-v0 env_kwargs.manipobj.mode=data_collection_tableware1+2 env_kwargs.manipobj.object_type=tableware env_kwargs.manipobj.local_object_name=bowl env_kwargs.manipobj.tableware_ppp_min_offset=0.10 env_kwargs.manipobj.tableware_ppp_max_offset=0.20 multiview=true dataset_name=tableware1+2-success-v0-mv dataset_type=noisy p_random_action=0.0 action_noise=0.0 num_collect_episodes=3000 max_episode_steps=550 save_success_only=true use_checkpoint=True checkpoint_interval=100
+bash exp.sh python collect.py task=manipobj-v0 env_kwargs.manipobj.mode=data_collection_tableware1+2 env_kwargs.manipobj.object_type=tableware env_kwargs.manipobj.local_object_name=bowl env_kwargs.manipobj.tableware_ppp_min_offset=0.05 env_kwargs.manipobj.tableware_ppp_max_offset=0.28 multiview=true dataset_name=tableware1+2-success-v0-mv dataset_type=noisy p_random_action=0.0 action_noise=0.0 num_collect_episodes=3000 max_episode_steps=500 save_success_only=true use_checkpoint=True checkpoint_interval=100
+python collect.py task=manipobj-v0 env_kwargs.manipobj.mode=data_collection_tableware3+2 env_kwargs.manipobj.object_type=tableware env_kwargs.manipobj.local_object_name=bowl env_kwargs.manipobj.tableware_ppp_min_offset=0.05 env_kwargs.manipobj.tableware_ppp_max_offset=0.28 multiview=true dataset_name=tableware3+2-success-v0-mv dataset_type=noisy p_random_action=0.0 action_noise=0.0 num_collect_episodes=3000 max_episode_steps=700 save_success_only=true use_checkpoint=True checkpoint_interval=100
+
+后台：
+bash ./exp.sh watch collect.py task=manipobj-v0 env_kwargs.manipobj.mode=data_collection_cube2+3 env_kwargs.manipobj.num_cubes=5 multiview=true dataset_name=cube2+3-noisy-v0-mv dataset_type=noisy p_random_action=0.02 num_collect_episodes=5000 max_episode_steps=1000 use_checkpoint=True checkpoint_interval=500
+
+python datasets/merge_shards_lowmem.py \
+  --checkpoint-dir datasets/data/cube0+3-noisy-v0-mv_checkpoints \
+  --train-path datasets/data/cube0+3-noisy-v0-mv.npz \
+  --val-path datasets/data/cube0+3-noisy-v0-mv-val.npz \
+  --chunk-mib 2048 \
+  --save-chunk-mib 1024 \
+  --compress-level 1 \
+  --keep-tmp
+  
+FORCE_REBUILD=1 DATA_DIV=20 BATCH_SIZE=128 NUM_EPOCHS=50 EVAL_EPOCH_FREQ=5 bash commands/train_visual_encoder_cubexy.sh 0 3
+
+bash commands/train_cubexy.sh 2 3 sgiql_dlp +preprocess_chunk_size=128
+
+bash ./exp.sh train_cubexy.py \
+  task=manipobj-v0 \
+  train_dataset_name=cube2+3-noisy-v0-mv \
+  env_kwargs.manipobj.mode=task_cube2+3 \
+  env_kwargs.manipobj.num_cubes=5 \
+  obs=ec_state_gen \
+  agent=sgiql \
+  steps=4001000 \
+  max_episode_steps=1500 \
+  sgiql.alpha=0.05 \
+  sgiql.subgoal_policy_type=diffusion \
+  sgiql.n_diffusion_steps=10 \
+  sgiql.subgoal_k=50 \
+  sgiql.n_diffusion_samples=256 \
+  sgiql.subgoal_steps=25 \
+  sgiql.num_subgoals=52 \
+  sgiql.value_competence_radius=-30
+
+
+
+  7%|███▋                                                | 7/100 [01:52<24:25, 15.76s/it]
+    │            这里过了ogbench的reset===============
+    ├──          info起始之地===============self._prev_ob_info状态对比
+    循           info起始之地===============应该是当前obs，用于制作21维度state
+    环           compute_reward，其中self._reward_mode是sparse===============
+    │            info起始之地===============get_step_info可能用于之后评估
+    ├──          info起始之地===============self._prev_ob_info状态对比
+    循           info起始之地===============应该是当前obs，用于制作21维度state
+    环           compute_reward，其中self._reward_mode是sparse===============
+    │            info起始之地===============get_step_info可能用于之后评估
+    ├──
+    目           初始化episode，记录当前goal============
+    标           info起始之地===============应该是当前obs，用于制作21维度state
+    更           info起始之地===============self._cur_goal_ob_info
+    新           info起始之地===============self._prev_ob_info状态对比
+    ├──          
+    │            info起始之地===============应该是当前obs，用于制作21维度state
+    reset        info起始之地===============当前info，加上了goal的那几个key
+    │
+    ├──          info起始之地===============self._prev_ob_info状态对比
+    循           info起始之地===============应该是当前obs，用于制作21维度state
+    环           compute_reward，其中self._reward_mode是sparse===============
+    │            info起始之地===============get_step_info可能用于之后评估
+    ├──          info起始之地===============self._prev_ob_info状态对比
+    循           info起始之地===============应该是当前obs，用于制作21维度state
+    环           compute_reward，其中self._reward_mode是sparse===============
+    │            info起始之地===============get_step_info可能用于之后评估
+    └──
+
+注意：visual_encoders/chkpts可能用不到
