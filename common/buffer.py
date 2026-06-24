@@ -87,8 +87,20 @@ class Buffer():
 		Load a batch of episodes into the buffer. This is useful for loading data from disk,
 		and is more efficient than adding episodes one by one.
 		"""
-		num_new_eps = len(td) // (self.cfg.data_episode_length + 1) 
-		td['episode'] = torch.arange(self._num_eps, self._num_eps+num_new_eps, dtype=torch.int64).repeat_interleave(self.cfg.data_episode_length + 1)
+		if 'episode' in td.keys():
+			episode = td['episode'].to(dtype=torch.int64)
+			if self._num_eps:
+				episode = episode + self._num_eps
+			td['episode'] = episode
+			num_new_eps = int(torch.unique_consecutive(episode.detach().cpu()).numel())
+		else:
+			num_new_eps = len(td) // (self.cfg.data_episode_length + 1)
+			td['episode'] = torch.arange(
+				self._num_eps,
+				self._num_eps+num_new_eps,
+				dtype=torch.int64,
+				device=td['obs'].device,
+			).repeat_interleave(self.cfg.data_episode_length + 1)
 		if self._num_eps == 0:
 			self._buffer = self._init(td[0].unsqueeze(0))
 			self.normalizer.set_stats(td["obs"])  # set RMS normalizer stats once from offline data

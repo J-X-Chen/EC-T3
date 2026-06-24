@@ -5,7 +5,10 @@ output
 outputs
 output_success_but_loss_step1
 
+data0
+
 data
+visual_encoders/lpwm
 
 ycb/*
 local_object_packs/glb_assets/*

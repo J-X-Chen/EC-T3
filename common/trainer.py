@@ -165,15 +165,15 @@ class Trainer:
 		print(f'Training agent for {self.cfg.steps} iterations...')
 		best_success_rate = 0
 		for i in range(self.cfg.steps):
-			print("\033[31m第一次迭代\033[0m")
+			import os; cjx_debug = os.environ.get('cjx_debug', ''); cjx_debug.lower() == 'true' and print("\033[31m第一次迭代\033[0m")
 			# sample batched data
 			batch = self.buffer.sample()
-			print("bbbbbbbbbbbbbbbbbbbbbbbbbatch")
+			import os; cjx_debug = os.environ.get('cjx_debug', ''); cjx_debug.lower() == 'true' and print("bbbbbbbbbbbbbbbbbbbbbbbbbatch")
 			# update agent
 			torch.compiler.cudagraph_mark_step_begin()
 			train_metrics = self.agent.update(batch, i)
-			import pdb; pdb.set_trace()
-			print("xxxxxxxxxxxxxxxxupdate")
+			# import pdb; pdb.set_trace()
+			import os; cjx_debug = os.environ.get('cjx_debug', ''); cjx_debug.lower() == 'true' and print("xxxxxxxxxxxxxxxxupdate")
 			# evaluate agent periodically
 			if i % self.cfg.eval_freq == 0 or i % 10_000 == 0:
 				train_metrics.update(self._time_metrics(i))

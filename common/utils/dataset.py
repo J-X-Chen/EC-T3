@@ -120,6 +120,23 @@ def load_dataset_from_file(dataset_path, cfg):
     return dataset
 
 
+def get_episode_ids_from_diagnostics(np_dataset):
+    """Return contiguous episode ids and per-episode lengths when diagnostics are available."""
+    if 'diagnostics_episode_index' not in np_dataset:
+        return None, None
+
+    raw_episode_ids = np_dataset['diagnostics_episode_index'].astype(np.int64, copy=False)
+    if raw_episode_ids.size == 0:
+        return None, None
+
+    boundaries = np.flatnonzero(raw_episode_ids[1:] != raw_episode_ids[:-1]) + 1
+    starts = np.concatenate(([0], boundaries))
+    ends = np.concatenate((boundaries, [raw_episode_ids.size]))
+    episode_lengths = (ends - starts).astype(np.int64, copy=False)
+    episode_ids = np.repeat(np.arange(episode_lengths.size, dtype=np.int64), episode_lengths)
+    return episode_ids, episode_lengths
+
+
 def preprocess_and_save_dataset(cfg, env, save_path, validation=False):
 
     split_suffix = '-val' if validation else ''
@@ -198,7 +215,25 @@ def load_dataset_to_buffer(cfg, env, validation=False):
     
     # Get dataset attributes
     capacity = np_dataset["terminals"].size
-    cfg.data_episode_length = int(np.nonzero(np_dataset["terminals"])[0][0]) + 1
+    episode_ids, episode_lengths = get_episode_ids_from_diagnostics(np_dataset)
+    if episode_lengths is not None:
+        if episode_ids.size != capacity:
+            raise ValueError(
+                f'episode id length mismatch: got {episode_ids.size}, expected {capacity}'
+            )
+        min_episode_length = int(episode_lengths.min())
+        if min_episode_length < 2:
+            raise ValueError('All episodes must contain at least two observations.')
+        cfg.data_episode_length = min_episode_length - 1
+        if not np.all(episode_lengths == episode_lengths[0]):
+            print(
+                f"Variable-length episodes detected: {episode_lengths.size} episodes, "
+                f"min={episode_lengths.min()}, max={episode_lengths.max()}, "
+                f"mean={episode_lengths.mean():.1f}. "
+                f"Sampling fixed windows of length {cfg.data_episode_length}."
+            )
+    else:
+        cfg.data_episode_length = int(np.nonzero(np_dataset["terminals"])[0][0]) + 1
     
     # Convert dataset to torch tensordict
     obs = torch.from_numpy(np_dataset["observations"])#torch.Size([3000000, 21])
@@ -206,10 +241,18 @@ def load_dataset_to_buffer(cfg, env, validation=False):
     if cfg.obs in ['state', 'ec_state', 'ec_state_gen', 'rgb']:
         # Process observations in case they have not been pre-processed into a dataset
         observations = []
-        chunk_size = cfg.data_episode_length + 1  # NOTE: for ec_state_gen it is important for the chunk_size to cover exactly one episode for the consistency of object IDs
         print(f"Preprocessing observations...")
-        for i in trange(0, len(obs), chunk_size):#chunk_size=1000
-            batch_obs = obs[i:i+chunk_size]#torch.Size([1000, 21])
+        if episode_lengths is not None:
+            episode_ends = np.cumsum(episode_lengths)
+            episode_starts = episode_ends - episode_lengths
+            chunks = zip(episode_starts, episode_ends)
+            iterator = tqdm(chunks, total=episode_lengths.size)
+        else:
+            chunk_size = cfg.data_episode_length + 1  # NOTE: for ec_state_gen it is important for the chunk_size to cover exactly one episode for the consistency of object IDs
+            iterator = ((i, min(i + chunk_size, len(obs))) for i in range(0, len(obs), chunk_size))
+            iterator = tqdm(iterator, total=(len(obs) + chunk_size - 1) // chunk_size)
+        for start, end in iterator:
+            batch_obs = obs[start:end]#torch.Size([1000, 21])
             batch_obs = env.preprocess_obs(batch_obs, batch=True)#<bound method TorchObsWrapper.preprocess_obs of <TorchObsWrapper<TimeLimit<OrderEnforcing<PassiveEnvChecker<ManipObjEnv<manipobj-v0>>>>>>>
             #变为batch_obs.shape --> torch.Size([1000, 1+3, 6+9])
             observations.append(batch_obs.numpy())
@@ -219,6 +262,8 @@ def load_dataset_to_buffer(cfg, env, validation=False):
             "obs": obs,#(3000000, 4, 15)
             "action": torch.from_numpy(np_dataset["actions"]),#(3000000, 5)
         }, batch_size=capacity)#3000000
+    if episode_ids is not None:
+        dataset["episode"] = torch.from_numpy(episode_ids)
     
     # Add information for reward calculation to tensordict
     if cfg.reward != 'unsupervised':
@@ -234,7 +279,7 @@ def load_dataset_to_buffer(cfg, env, validation=False):
     buffer = Buffer(cfg, env, capacity)
     buffer.load(dataset)#<common.buffer.Buffer object at 0x7072a0902740>
     
-    expected_episodes = capacity // (cfg.data_episode_length + 1)
+    expected_episodes = episode_lengths.size if episode_lengths is not None else capacity // (cfg.data_episode_length + 1)
     if buffer.num_eps != expected_episodes:
         print(f'WARNING: buffer has {buffer.num_eps} episodes, expected {expected_episodes} episodes for {cfg.task} task.')
     return buffer

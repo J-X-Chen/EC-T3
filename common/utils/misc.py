@@ -47,16 +47,17 @@ def visualize_frame(cfg, env, reward, obs_mean, obs_std, info, goal_info, act_in
         goal_frame = np.concatenate([goal_frame[i] for i in range(len(goal_frame))], axis=1)
     
     if cfg.agent == 'sgiql' and cfg.obs in ['dlp'] and not cfg.sgiql["disable_subgoal"]:
+        rep_device = torch.device(env.preprocess_info["device"])
         goal_image = goal_info['goal_rendered']
         if len(goal_image.shape) == 3:
             goal_image = goal_image.reshape(1, *goal_image.shape)
-        raw_goal_image = torch.from_numpy(goal_image).permute(0, 3, 1, 2).to(env.preprocess_info["device"])
+        raw_goal_image = torch.from_numpy(goal_image).permute(0, 3, 1, 2).to(rep_device)
         z_bg = env.preprocess_info["rep_model"].encode_all(raw_goal_image.to(torch.float32) / 255)["z_bg"]
-        subgoal = act_info["subgoal"] * obs_std.to(env.preprocess_info["device"]) + obs_mean.to(env.preprocess_info["device"])
-        subgoal = subgoal.reshape(2 if cfg.multiview else 1, -1, subgoal.shape[-1]).to(env.preprocess_info["device"])
+        subgoal = act_info["subgoal"].to(rep_device) * obs_std.to(rep_device) + obs_mean.to(rep_device)
+        subgoal = subgoal.reshape(2 if cfg.multiview else 1, -1, subgoal.shape[-1])
         normalized_subgoal_image = env.preprocess_info["rep_model"].decode_all(
-                                        z=subgoal[..., :2], z_scale=subgoal[..., 2:4], z_depth=subgoal[..., 4:5], obj_on=subgoal[..., 5],
-                                        z_features=subgoal[..., 6:], z_bg=z_bg, noisy=False
+                                            z=subgoal[..., :2], z_scale=subgoal[..., 2:4], z_depth=subgoal[..., 4:5], obj_on=subgoal[..., 5],
+                                            z_features=subgoal[..., 6:], z_bg=z_bg, noisy=False
                                     )["rec"]  # NOTE: 'dec_objects_trans' is foreground reconstruction
         subgoal_frame = np.moveaxis(normalized_subgoal_image.cpu().numpy() * 255, 1, -1).astype(np.uint8)
         if len(subgoal_frame) == 1:
@@ -67,8 +68,9 @@ def visualize_frame(cfg, env, reward, obs_mean, obs_std, info, goal_info, act_in
         frame = np.concatenate([goal_frame, subgoal_frame, frame], axis=0)
     
     elif cfg.agent in ['hiql', 'sgiql'] and cfg.obs in ['vqvae'] and not cfg.sgiql["disable_subgoal"]:
-        subgoal = torch.clamp(act_info["subgoal"] * obs_std.to(env.preprocess_info["device"]) + obs_mean.to(env.preprocess_info["device"]), -1, 1)
-        subgoal = subgoal.reshape(2 if cfg.multiview else 1, 16, 8, 8).to(env.preprocess_info["device"])
+        rep_device = torch.device(env.preprocess_info["device"])
+        subgoal = torch.clamp(act_info["subgoal"].to(rep_device) * obs_std.to(rep_device) + obs_mean.to(rep_device), -1, 1)
+        subgoal = subgoal.reshape(2 if cfg.multiview else 1, 16, 8, 8)
         normalized_subgoal_image = env.preprocess_info["rep_model"].decode(subgoal)
         subgoal_frame = np.moveaxis(((normalized_subgoal_image.cpu().numpy() + 1 ) / 2)  * 255, 1, -1).astype(np.uint8)
         if len(subgoal_frame) == 1:

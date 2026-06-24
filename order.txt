@@ -34,8 +34,17 @@ python datasets/merge_shards_lowmem.py \
   --save-chunk-mib 1024 \
   --compress-level 1 \
   --keep-tmp
+
+python datasets/merge_shards_lowmem.py \
+  --checkpoint-dir datasets/data/tableware1+2-success-v0-mv_checkpoints \
+  --train-path datasets/data/tableware1+2-noisy-v0-mv.npz \
+  --val-path datasets/data/tableware1+2-noisy-v0-mv-val.npz \
+  --chunk-mib 2048 \
+  --save-chunk-mib 1024 \
+  --compress-level 1 \
+  --keep-tmp
   
-FORCE_REBUILD=1 DATA_DIV=20 BATCH_SIZE=128 NUM_EPOCHS=50 EVAL_EPOCH_FREQ=5 bash commands/train_visual_encoder_cubexy.sh 0 3
+FORCE_REBUILD=1 DATA_DIV=20 BATCH_SIZE=128 NUM_EPOCHS=100 EVAL_EPOCH_FREQ=5 bash commands/train_visual_encoder_cubexy.sh 0 3
 
 bash commands/train_cubexy.sh 2 3 sgiql_dlp +preprocess_chunk_size=128
 
@@ -57,6 +66,32 @@ bash ./exp.sh train_cubexy.py \
   sgiql.num_subgoals=52 \
   sgiql.value_competence_radius=-30
 
+bash ./exp.sh train.py \
+  task=manipobj-v0 \
+  train_dataset_name=tableware1+2-noisy-v0-mv \
+  env_kwargs.manipobj.mode=task_tableware1+2 \
+  env_kwargs.manipobj.object_type=tableware \
+  env_kwargs.manipobj.local_object_name=bowl \
+  env_kwargs.manipobj.num_cubes=0 \
+  env_kwargs.manipobj.tableware_ppp_min_offset=0.05 \
+  env_kwargs.manipobj.tableware_ppp_max_offset=0.28 \
+  obs=dlp \
+  multiview=true \
+  rep_model_checkpoint=visual_encoders/chkpts/dlp-mv-tableware1+2-v0 \
+  rep_model_device=cuda:1 \
+  agent=sgiql \
+  steps=3501000 \
+  max_episode_steps=500 \
+  sgiql.alpha=0.2 \
+  sgiql.subgoal_policy_type=diffusion \
+  sgiql.n_diffusion_steps=10 \
+  sgiql.subgoal_k=50 \
+  sgiql.n_diffusion_samples=256 \
+  sgiql.subgoal_steps=25 \
+  sgiql.num_subgoals=32 \
+  sgiql.value_competence_radius=-30 \
+  num_eval_episodes=50 \
+  eval_freq=250000
 
 
   7%|███▋                                                | 7/100 [01:52<24:25, 15.76s/it]
